@@ -54,10 +54,3 @@ runs:
     - name: Test
       run: mvn -B jar:jar surefire:test
       shell: bash
-
-    - name: Deploy
-      env:
-        NEXUS_USERNAME: ${{ inputs.nexus-username }}
-        NEXUS_PASSWORD: ${{ inputs.nexus-password }}
-      run: mvn deploy -DskipTests -s .github/workflows/settings.xml
-      shell: bash
