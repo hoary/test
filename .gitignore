@@ -1,0 +1,16 @@
+﻿# Eclipse Core
+**/.classpath
+**/.project
+**/.settings/
+
+# IntelliJ IDEA
+**/*.iml
+**/.idea
+
+# Maven Build
+**/target
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll

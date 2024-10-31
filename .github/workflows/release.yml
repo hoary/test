@@ -1,0 +1,82 @@
+name: Release
+
+on:
+  create:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: [self-hosted, "${{ matrix.os }}"]
+
+    strategy:
+      matrix:
+        os: [ubuntu-20.04, macos-13, windows-2022]
+        java: [17]
+
+    env:
+      WEBRTC_CACHE_BRANCH: 4844
+      WEBRTC_CHECKOUT_FOLDER: webrtc
+      WEBRTC_INSTALL_FOLDER: webrtc/build
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Linux audio system
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pulseaudio libpulse-dev libasound2-dev libudev-dev libv4l-dev
+          # Required for testing
+          pulseaudio --start
+
+      - name: Set up WebRTC cache
+        uses: actions/cache@v1
+        with:
+          path: ~/${{ env.WEBRTC_INSTALL_FOLDER }}
+          key: webrtc-${{ env.WEBRTC_CACHE_BRANCH }}-${{ runner.os }}-${{ hashFiles('webrtc-jni/pom.xml') }}
+          restore-keys: webrtc-${{ env.WEBRTC_CACHE_BRANCH }}-${{ runner.os }}-
+
+      - name: Set up Maven cache
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key: maven-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+          restore-keys: maven-${{ runner.os }}-
+
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.java }}
+          server-id: ossrh
+          server-username: NEXUS_USERNAME
+          server-password: NEXUS_PASSWORD
+          settings-path: ${{ github.workspace }}/.github/workflows
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: GPG_PASSPHRASE
+
+      - name: Create Release
+        if: runner.os == 'Linux' # Create release only once
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Build
+        run: mvn package -DskipTests -s .github/workflows/settings.xml
+
+      - name: Test
+        run: mvn -B jar:jar surefire:test
+
+      - name: Deploy
+        env:
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+        run: mvn deploy -Prelease -DskipTests -s .github/workflows/settings.xml
