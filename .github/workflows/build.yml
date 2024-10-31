@@ -176,8 +176,8 @@ jobs:
       fail-fast: false
       matrix:
         platform:
-          - name: macos_x86-64
-            runs-on: macos-13
+          - name: macos_arm64
+            runs-on: macos-14
         java: [17]
     runs-on: ${{ matrix.platform.runs-on }}
     steps:
