@@ -177,10 +177,6 @@ if(EXISTS "${WEBRTC_LIB_PATH}" OR EXISTS "${WEBRTC_LIB_PATH_INSTALLED}")
 	return()
 endif()
 
-if(LINUX)
-	sysroot_install(TRUE)
-endif()
-
 if(NOT EXISTS "${WEBRTC_SRC_DIR}/depot_tools")
 	message(STATUS "WebRTC: fetch depot tools")
 	file(MAKE_DIRECTORY ${WEBRTC_SRC_DIR})
@@ -215,6 +211,10 @@ execute_command(
 	COMMAND gclient sync
 	WORKING_DIRECTORY "${WEBRTC_DIR}"
 )
+
+if(LINUX)
+	sysroot_install(TRUE)
+endif()
 
 file(GLOB PATCHES "${CMAKE_CURRENT_LIST_DIR}/patches/${SOURCE_TARGET}/*.patch")
 
