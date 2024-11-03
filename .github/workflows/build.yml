@@ -172,6 +172,7 @@ jobs:
           overwrite: true
 
   build-macos:
+    if: false
     strategy:
       fail-fast: false
       matrix:
