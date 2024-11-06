@@ -77,14 +77,10 @@ function(execute_command)
 	print("${COMMAND_ERROR}")
 endfunction()
 
-function(sysroot_install use_webrtc_root)
+function(sysroot_install)
 	message(STATUS "Installing sysroot")
 
-	if(${use_webrtc_root})
-		set(SCRIPT_PATH ${WEBRTC_SRC_DIR}/src/build/linux/sysroot_scripts/install-sysroot.py)
-	else()
-		set(SCRIPT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/linux/sysroot/install-sysroot.py)
-	endif()
+	set(SCRIPT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/linux/sysroot/install-sysroot.py)
 
 	execute_process(
 		COMMAND ${Python3_EXECUTABLE} ${SCRIPT_PATH} --arch=${TARGET_CPU}
@@ -97,14 +93,10 @@ function(sysroot_install use_webrtc_root)
     print("${COMMAND_ERROR}")
 endfunction()
 
-function(sysroot_link use_webrtc_root)
+function(sysroot_link)
 	message(STATUS "Retrieving libm.so from sysroot")
 
-	if(${use_webrtc_root})
-		set(SYSROOT_PATH ${WEBRTC_SRC_DIR}/src/build/linux)
-	else()
-		set(SYSROOT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/linux)
-	endif()
+	set(SYSROOT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/linux)
 
 	execute_process(
 		COMMAND find ${SYSROOT_PATH} -iname libm-*.so
@@ -170,8 +162,8 @@ if(EXISTS "${WEBRTC_LIB_PATH}" OR EXISTS "${WEBRTC_LIB_PATH_INSTALLED}")
 	message(STATUS "WebRTC: Compiled version found '${TARGET_LINK_LIB}'")
 
 	if(LINUX)
-		sysroot_install(FALSE)
-		sysroot_link(FALSE)
+		sysroot_install()
+		sysroot_link()
 	endif()
 
 	return()
@@ -213,7 +205,7 @@ execute_command(
 )
 
 if(LINUX)
-	sysroot_install(TRUE)
+	sysroot_install()
 endif()
 
 file(GLOB PATCHES "${CMAKE_CURRENT_LIST_DIR}/patches/${SOURCE_TARGET}/*.patch")
@@ -251,7 +243,7 @@ execute_command(
 )
 
 if(LINUX)
-	sysroot_link(TRUE)
+	sysroot_link()
 endif()
 
 install(FILES "${WEBRTC_LIB_PATH}" DESTINATION "${WEBRTC_INSTALL_DIR}/lib")
