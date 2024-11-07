@@ -176,6 +176,8 @@ jobs:
       fail-fast: false
       matrix:
         platform:
+          - name: macos_x86_64
+            runs-on: macos-13
           - name: macos_arm64
             runs-on: macos-14
         java: [17]
