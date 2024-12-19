@@ -74,7 +74,9 @@ jobs:
           java-version: ${{ matrix.java }}
           platform-name: ${{ matrix.platform.name }}
           maven-username: ${{ secrets.MAVEN_USERNAME }}
-          maven-password: ${{ secrets.MAVEN_PASSWORD }}
+          maven-password: ${{ secrets.MAVEN_TOKEN }}
+          maven-gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          maven-gpg-passphrase: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
   build-linux:
     strategy:
@@ -137,6 +139,8 @@ jobs:
       fail-fast: false
       matrix:
         platform:
+          - name: macos_x86-64
+            runs-on: macos-13
           - name: macos_arm64
             runs-on: macos-14
         java: [17]
@@ -163,4 +167,6 @@ jobs:
           java-version: ${{ matrix.java }}
           platform-name: ${{ matrix.platform.name }}
           maven-username: ${{ secrets.MAVEN_USERNAME }}
-          maven-password: ${{ secrets.MAVEN_PASSWORD }}
+          maven-password: ${{ secrets.MAVEN_TOKEN }}
+          maven-gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          maven-gpg-passphrase: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
