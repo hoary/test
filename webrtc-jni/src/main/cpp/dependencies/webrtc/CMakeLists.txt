@@ -1,8 +1,10 @@
 cmake_minimum_required(VERSION 3.13)
 project(webrtc)
 
-# Used for Linux sysroot installation
-find_package(Python3 REQUIRED COMPONENTS Interpreter)
+if(LINUX)
+	# Used for Linux sysroot installation
+	find_package(Python3 REQUIRED COMPONENTS Interpreter)
+endif()
 
 FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/pseudo.hxx
 "template<class T> class pseudo{}\n")
@@ -151,8 +153,13 @@ if(APPLE)
 	target_compile_definitions(${PROJECT_NAME} PUBLIC WEBRTC_MAC WEBRTC_POSIX)
 	target_link_libraries(${PROJECT_NAME} "-framework Foundation" "-framework AVFoundation" "-framework CoreGraphics" "-framework CoreAudio" "-framework AudioToolbox" "-framework IOSurface" "-framework ApplicationServices" "-framework AppKit")
 elseif(LINUX)
+	# Find DBus
+	find_package(PkgConfig QUIET REQUIRED) # Include functions provided by PkgConfig module.
+	pkg_check_modules(DBUS REQUIRED dbus-1)
+
+	target_include_directories(${PROJECT_NAME} PUBLIC ${DBUS_INCLUDE_DIRS})
 	target_compile_definitions(${PROJECT_NAME} PUBLIC WEBRTC_LINUX WEBRTC_POSIX)
-	target_link_libraries(${PROJECT_NAME} X11)
+	target_link_libraries(${PROJECT_NAME} X11 dbus-1)
 elseif(WIN32)
 	target_compile_definitions(${PROJECT_NAME} PUBLIC WEBRTC_WIN NOMINMAX WIN32_LEAN_AND_MEAN)
 	target_link_libraries(${PROJECT_NAME} D3D11 DXGI user32 gdi32 iphlpapi dmoguids msdmo secur32 strmiids winmm wmcodecdspuuid ws2_32)

@@ -73,8 +73,8 @@ jobs:
         with:
           java-version: ${{ matrix.java }}
           platform-name: ${{ matrix.platform.name }}
-          nexus-username: ${{ secrets.NEXUS_USERNAME }}
-          nexus-password: ${{ secrets.NEXUS_PASSWORD }}
+          maven-username: ${{ secrets.MAVEN_USERNAME }}
+          maven-password: ${{ secrets.MAVEN_PASSWORD }}
 
   build-linux:
     strategy:
@@ -114,46 +114,12 @@ jobs:
       - name: Install required packages
         run: |
           sudo apt-get update
-          sudo apt-get install -y pulseaudio libdbus-1-dev libpulse-dev libasound2-dev libudev-dev libv4l-dev libx11-dev binutils cmake git locales lsb-release ninja-build pkg-config python3 python3-setuptools rsync unzip wget xz-utils
+          sudo apt-get install -y pulseaudio libpulse-dev libasound2-dev libdbus-1-dev libudev-dev libv4l-dev libx11-dev binutils cmake git locales lsb-release ninja-build pkg-config python3 python3-setuptools rsync unzip wget xz-utils
           # Required for testing
           pulseaudio --start
           #sudo apt-get install -y pipewire pipewire-pulse gstreamer1.0-pipewire libspa-0.2-bluetooth libspa-0.2-jack pipewire-audio-client-libraries
           #systemctl --user daemon-reload
           #systemctl --user --now enable pipewire{,-pulse}.{socket,service}
-
-      - name: Install required arm64 packages
-        if: matrix.platform.name == 'linux_arm64'
-        run: |
-          # Ubuntu has ARM64 packages in an entirely different repo, so we can't just
-          # `dpkg --add-architecture arm64` here: we have to add a custom sources.list first.
-          sudo tee /etc/apt/sources.list.d/ubuntu.sources <<EOF > /dev/null
-          Types: deb
-          URIs: http://azure.archive.ubuntu.com/ubuntu/
-          Suites: noble noble-updates noble-backports
-          Components: main universe restricted multiverse
-          Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
-          Architectures: amd64
-
-          Types: deb
-          URIs: http://azure.ports.ubuntu.com/ubuntu-ports/
-          Suites: noble noble-updates noble-backports
-          Components: main universe restricted multiverse
-          Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
-          Architectures: arm64
-          EOF
-
-          sudo dpkg --add-architecture arm64
-          sudo apt-get update -y
-          sudo apt-get install -y gcc make aarch64-linux-gnu-gcc aarch64-linux-gnu-g++ gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu g++-aarch64-linux-gnu libc6-arm64-cross libc6:arm64 ninja-build:arm64 libx11-dev:arm64 libasound2-dev:arm64 libc6-dev:arm64 libevdev-dev:arm64 libpulse-dev:arm64 libudev-dev:arm64 libudev1:arm64
-
-      - name: Download compiled library artifact
-        if: false
-        uses: actions/download-artifact@v4
-        with:
-          name: webrtc-${{ env.WEBRTC_CACHE_BRANCH }}-${{ matrix.platform.name }}
-          path: ~/${{ env.WEBRTC_INSTALL_FOLDER }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: 11180967349
 
       - id: maven-build
         name: Maven build
@@ -161,22 +127,18 @@ jobs:
         with:
           java-version: ${{ matrix.java }}
           platform-name: ${{ matrix.platform.name }}
-          nexus-username: ${{ secrets.NEXUS_USERNAME }}
-          nexus-password: ${{ secrets.NEXUS_PASSWORD }}
-
-      - name: Upload compiled library artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: webrtc-${{ env.WEBRTC_CACHE_BRANCH }}-${{ matrix.platform.name }}
-          path: ~/${{ env.WEBRTC_INSTALL_FOLDER }}
-          overwrite: true
+          maven-username: ${{ secrets.MAVEN_USERNAME }}
+          maven-password: ${{ secrets.MAVEN_TOKEN }}
+          maven-gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          maven-gpg-passphrase: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
   build-macos:
+    if: false
     strategy:
       fail-fast: false
       matrix:
         platform:
-          - name: macos_x86_64
+          - name: macos_x86-64
             runs-on: macos-13
           - name: macos_arm64
             runs-on: macos-14
@@ -203,5 +165,5 @@ jobs:
         with:
           java-version: ${{ matrix.java }}
           platform-name: ${{ matrix.platform.name }}
-          nexus-username: ${{ secrets.NEXUS_USERNAME }}
-          nexus-password: ${{ secrets.NEXUS_PASSWORD }}
+          maven-username: ${{ secrets.MAVEN_USERNAME }}
+          maven-password: ${{ secrets.MAVEN_PASSWORD }}
