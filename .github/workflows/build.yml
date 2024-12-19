@@ -133,13 +133,10 @@ jobs:
           maven-gpg-passphrase: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
   build-macos:
-    if: false
     strategy:
       fail-fast: false
       matrix:
         platform:
-          - name: macos_x86-64
-            runs-on: macos-13
           - name: macos_arm64
             runs-on: macos-14
         java: [17]
@@ -157,7 +154,7 @@ jobs:
           brew install python-setuptools
 
       - name: Select Xcode version
-        run: sudo xcode-select -s /Applications/Xcode_14.3.1.app/Contents/Developer
+        run: sudo xcode-select -s /Applications/Xcode_15.0.1.app/Contents/Developer
 
       - id: maven-build
         name: Maven build
