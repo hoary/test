@@ -75,8 +75,6 @@ jobs:
           platform-name: ${{ matrix.platform.name }}
           maven-username: ${{ secrets.MAVEN_USERNAME }}
           maven-password: ${{ secrets.MAVEN_TOKEN }}
-          maven-gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
-          maven-gpg-passphrase: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
   build-linux:
     strategy:
@@ -131,8 +129,6 @@ jobs:
           platform-name: ${{ matrix.platform.name }}
           maven-username: ${{ secrets.MAVEN_USERNAME }}
           maven-password: ${{ secrets.MAVEN_TOKEN }}
-          maven-gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
-          maven-gpg-passphrase: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
   build-macos:
     strategy:
@@ -168,5 +164,3 @@ jobs:
           platform-name: ${{ matrix.platform.name }}
           maven-username: ${{ secrets.MAVEN_USERNAME }}
           maven-password: ${{ secrets.MAVEN_TOKEN }}
-          maven-gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
-          maven-gpg-passphrase: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
