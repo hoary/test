@@ -60,7 +60,7 @@ jobs:
 
       - id: maven-build
         name: Maven build
-        uses: ./.github/actions/build
+        uses: ./.github/actions/release
         with:
           java-version: ${{ matrix.java }}
           platform-name: ${{ matrix.platform.name }}
@@ -126,7 +126,7 @@ jobs:
 
       - id: maven-build
         name: Maven build
-        uses: ./.github/actions/build
+        uses: ./.github/actions/release
         with:
           java-version: ${{ matrix.java }}
           platform-name: ${{ matrix.platform.name }}
@@ -163,7 +163,7 @@ jobs:
 
       - id: maven-build
         name: Maven build
-        uses: ./.github/actions/build
+        uses: ./.github/actions/release
         with:
           java-version: ${{ matrix.java }}
           platform-name: ${{ matrix.platform.name }}
