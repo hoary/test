@@ -152,7 +152,9 @@ jobs:
 
       - name: Get tag from current branch
         id: tag-selector
-        run: echo "tag=$(git describe --abbrev=0 --tags)" >> "$GITHUB_OUTPUT"
+        run: |
+          git fetch -a
+          echo "tag=$(git describe --abbrev=0 --tags)" >> "$GITHUB_OUTPUT"
 
       - name: Create Release # Create the release only once on Linux
         uses: actions/create-release@v1
