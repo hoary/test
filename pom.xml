@@ -190,6 +190,8 @@
 						<tagNameFormat>v@{project.version}</tagNameFormat>
 						<scmDevelopmentCommitComment>Prepare for next development iteration</scmDevelopmentCommitComment>
 						<scmReleaseCommitComment>Prepare release @{releaseLabel}</scmReleaseCommitComment>
+						<goals>deploy</goals>
+						<preparationGoals>clean</preparationGoals>
 					</configuration>
 				</plugin>
 				<plugin>
