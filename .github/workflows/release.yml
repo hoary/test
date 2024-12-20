@@ -23,9 +23,6 @@ jobs:
   prepare-release:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
@@ -37,12 +34,13 @@ jobs:
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
-      - name: Prepare deployment
+      - name: Checkout code
+        uses: actions/checkout@v4
         env:
           MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
           MAVEN_TOKEN: ${{ secrets.MAVEN_TOKEN }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
-        run: |
+      - run: |
           git config --global user.name "${{ github.actor }}"
           git config --global user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
           mvn release:prepare -DskipTests -DdevelopmentVersion=${{ github.event.inputs.developmentVersion }}
