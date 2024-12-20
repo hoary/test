@@ -40,10 +40,9 @@ jobs:
           MAVEN_TOKEN: ${{ secrets.MAVEN_TOKEN }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
         run: |
-          mvn release:prepare -DskipTests -DpushChanges=false -DdevelopmentVersion=${{ github.event.inputs.developmentVersion }}
-          git push
-          git push --tags
-          mvn release:perform -Prelease
+          git config --global user.name "${{ github.actor }}"
+          git config --global user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
+          mvn release:prepare -DskipTests -DdevelopmentVersion=${{ github.event.inputs.developmentVersion }}
 
   build-windows:
     needs: prepare-release
