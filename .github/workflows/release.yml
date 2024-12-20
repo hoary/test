@@ -36,8 +36,6 @@ jobs:
 
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.PAT }}
         env:
           MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
           MAVEN_TOKEN: ${{ secrets.MAVEN_TOKEN }}
@@ -45,7 +43,9 @@ jobs:
       - run: |
           git config --global user.name "${{ github.actor }}"
           git config --global user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
-          mvn release:prepare -DskipTests -DdevelopmentVersion=${{ github.event.inputs.developmentVersion }}
+          mvn release:prepare -DskipTests -DpushChanges=false -DdevelopmentVersion=${{ github.event.inputs.developmentVersion }}
+          git push
+          git push --tags
 
   build-windows:
     needs: prepare-release
