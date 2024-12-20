@@ -16,9 +16,6 @@ env:
   WEBRTC_CHECKOUT_FOLDER: webrtc
   WEBRTC_INSTALL_FOLDER: webrtc/build
 
-permissions:
-  contents: write
-
 jobs:
   prepare-release:
     runs-on: ubuntu-latest
@@ -151,13 +148,17 @@ jobs:
           #systemctl --user daemon-reload
           #systemctl --user --now enable pipewire{,-pulse}.{socket,service}
 
-      - name: Create Release # Create release only once on Linux
+      - name: Get tag from current branch
+        id: tag-selector
+        run: echo "tag=$(git describe --abbrev=0 --tags)" >> "$GITHUB_OUTPUT"
+
+      - name: Create Release # Create the release only once on Linux
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag_name: ${{ steps.tag-selector.outputs.tag }}
+          release_name: Release $${{ steps.tag-selector.outputs.tag }}
           draft: false
           prerelease: false
 
