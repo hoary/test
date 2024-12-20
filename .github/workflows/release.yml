@@ -5,6 +5,11 @@ on:
     tags:
       - 'v*'
   workflow_dispatch:
+    inputs:
+      developmentVersion:
+        description: "Default version to use for new local working copy."
+        required: true
+        default: "X.Y.Z-SNAPSHOT"
 
 env:
   WEBRTC_CACHE_BRANCH: 4844
@@ -12,7 +17,37 @@ env:
   WEBRTC_INSTALL_FOLDER: webrtc/build
 
 jobs:
+  prepare-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          server-id: ossrh
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_TOKEN
+          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+
+      - name: Prepare deployment
+        env:
+          MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
+          MAVEN_TOKEN: ${{ secrets.MAVEN_TOKEN }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+        run: |
+          mvn release:clean release:prepare -DpushChanges=false -DdevelopmentVersion=${{ github.event.inputs.developmentVersion }}
+          git push
+          git push --tags
+          mvn release:perform -Prelease
+          mvn release:clean
+
   build-windows:
+    needs: prepare-release
     if: false
     strategy:
       fail-fast: false
@@ -70,6 +105,7 @@ jobs:
           maven-gpg-passphrase: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
   build-linux:
+    needs: prepare-release
     strategy:
       fail-fast: false
       matrix:
@@ -136,6 +172,8 @@ jobs:
           maven-gpg-passphrase: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
   build-macos:
+    needs: prepare-release
+    if: false
     strategy:
       fail-fast: false
       matrix:
