@@ -118,6 +118,14 @@ jobs:
         with:
           fetch-tags: true
 
+      - name: Get tag from current branch
+        id: tag-selector
+        run: |
+          git fetch -a
+          tag=$(git describe --tags `git rev-list --tags --max-count=1`)
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          git checkout $tag
+
       - name: Disk cleanup
         run: |
           set -x
@@ -149,12 +157,6 @@ jobs:
           #sudo apt-get install -y pipewire pipewire-pulse gstreamer1.0-pipewire libspa-0.2-bluetooth libspa-0.2-jack pipewire-audio-client-libraries
           #systemctl --user daemon-reload
           #systemctl --user --now enable pipewire{,-pulse}.{socket,service}
-
-      - name: Get tag from current branch
-        id: tag-selector
-        run: |
-          git fetch -a
-          echo "tag=$(git describe --tags `git rev-list --tags --max-count=1`)" >> "$GITHUB_OUTPUT"
 
       - name: Create Release # Create the release only once on Linux
         uses: actions/create-release@v1
