@@ -18,7 +18,7 @@ env:
 
 jobs:
   prepare-release:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Set up Java
         uses: actions/setup-java@v4
