@@ -16,8 +16,7 @@
 		<webrtc.src.dir>${user.home}/webrtc</webrtc.src.dir>
 		<webrtc.install.dir>${user.home}/webrtc/build</webrtc.install.dir>
 		<cmake.build.type>Release</cmake.build.type>
-		<cmake.phase>generate-resources</cmake.phase>
-		<cmake.toolchain.file/>
+		<cmake.toolchain.file></cmake.toolchain.file>
 	</properties>
 
 	<build>
@@ -85,7 +84,7 @@
 				<executions>
 					<execution>
 						<id>cmake-generate</id>
-						<phase>${cmake.phase}</phase>
+						<phase>generate-resources</phase>
 						<goals>
 							<goal>generate</goal>
 						</goals>
@@ -182,15 +181,6 @@
 			</activation>
 			<properties>
 				<cmake.toolchain.file>toolchain/aarch64-linux-gnu.cmake</cmake.toolchain.file>
-			</properties>
-		</profile>
-		<profile>
-			<id>skip-cmake</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<properties>
-				<cmake.phase>none</cmake.phase>
 			</properties>
 		</profile>
 	</profiles>
