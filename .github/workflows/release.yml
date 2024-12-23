@@ -45,7 +45,7 @@ jobs:
       - run: |
           git config --global user.name "${{ github.actor }}"
           git config --global user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
-          mvn release:prepare -DskipTests -Darguments="-DskipTests=true -Dmaven.test.skip=true" -DpushChanges=false -DdevelopmentVersion=${{ github.event.inputs.developmentVersion }}
+          mvn release:prepare -DskipTests -DpushChanges=false -DdevelopmentVersion=${{ github.event.inputs.developmentVersion }}
           git push
           git push --tags
 
