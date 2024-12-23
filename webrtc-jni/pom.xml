@@ -119,7 +119,7 @@
 					</execution>
 					<execution>
 						<id>cmake-compile</id>
-						<phase>generate-resources</phase>
+						<phase>${cmake.phase}</phase>
 						<goals>
 							<goal>compile</goal>
 						</goals>
