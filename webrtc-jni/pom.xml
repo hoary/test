@@ -16,9 +16,7 @@
 		<webrtc.src.dir>${user.home}/webrtc</webrtc.src.dir>
 		<webrtc.install.dir>${user.home}/webrtc/build</webrtc.install.dir>
 		<cmake.build.type>Release</cmake.build.type>
-		<cmake.phase>generate-resources</cmake.phase>
 		<cmake.toolchain.file />
-		<install.phase>package</install.phase>
 	</properties>
 
 	<build>
@@ -63,7 +61,7 @@
 				<executions>
 					<execution>
 						<id>install-classifier</id>
-						<phase>${install.phase}</phase>
+						<phase>package</phase>
 						<goals>
 							<goal>install-file</goal>
 						</goals>
@@ -86,7 +84,7 @@
 				<executions>
 					<execution>
 						<id>cmake-generate</id>
-						<phase>${cmake.phase}</phase>
+						<phase>generate-resources</phase>
 						<goals>
 							<goal>generate</goal>
 						</goals>
@@ -120,7 +118,7 @@
 					</execution>
 					<execution>
 						<id>cmake-compile</id>
-						<phase>${cmake.phase}</phase>
+						<phase>generate-resources</phase>
 						<goals>
 							<goal>compile</goal>
 						</goals>
@@ -216,9 +214,12 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-install-plugin</artifactId>
-						<configuration>
-							<skip>true</skip>
-						</configuration>
+						<executions>
+							<execution>
+								<id>install-classifier</id>
+								<phase>none</phase>
+							</execution>
+						</executions>
 					</plugin>
 				</plugins>
 			</build>
