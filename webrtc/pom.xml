@@ -52,6 +52,7 @@
 			<artifactId>${project.artifactId}</artifactId>
 			<version>${project.version}</version>
 			<classifier>${platform.classifier}</classifier>
+			<scope>system</scope>
 		</dependency>
 	</dependencies>
 </project>

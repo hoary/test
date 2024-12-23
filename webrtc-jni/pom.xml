@@ -184,16 +184,6 @@
 			</properties>
 		</profile>
 		<profile>
-			<id>skip-cmake</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<properties>
-				<cmake.phase>none</cmake.phase>
-				<install.phase>none</install.phase>
-			</properties>
-		</profile>
-		<profile>
 			<id>skip-build</id>
 			<build>
 				<plugins>
