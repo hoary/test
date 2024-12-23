@@ -20,6 +20,11 @@ jobs:
   prepare-release:
     runs-on: ubuntu-latest
     steps:
+      - name: Install required packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pulseaudio libpulse-dev libasound2-dev libdbus-1-dev libudev-dev libv4l-dev libx11-dev cmake
+
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
@@ -40,7 +45,7 @@ jobs:
       - run: |
           git config --global user.name "${{ github.actor }}"
           git config --global user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
-          mvn release:prepare -DskipTests -Darguments="-Dinvoker.skip=true -DskipTests=true -Dmaven.test.skip=true" -DpushChanges=false -DdevelopmentVersion=${{ github.event.inputs.developmentVersion }}
+          mvn release:prepare -DskipTests -Darguments="-DskipTests=true -Dmaven.test.skip=true" -DpushChanges=false -DdevelopmentVersion=${{ github.event.inputs.developmentVersion }}
           git push
           git push --tags
 
