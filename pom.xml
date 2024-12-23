@@ -262,6 +262,30 @@
 			</build>
 		</profile>
 		<profile>
+			<id>skip-build</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.googlecode.cmake-maven-project</groupId>
+						<artifactId>cmake-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>cmake-generate</id>
+								<phase>none</phase>
+							</execution>
+							<execution>
+								<id>cmake-compile</id>
+								<phase>none</phase>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
 			<id>windows-x86_64</id>
 			<activation>
 				<os>
