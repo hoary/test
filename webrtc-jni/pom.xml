@@ -17,8 +17,7 @@
 		<webrtc.install.dir>${user.home}/webrtc/build</webrtc.install.dir>
 		<cmake.build.type>Release</cmake.build.type>
 		<cmake.phase>generate-resources</cmake.phase>
-		<cmake.toolchain.file />
-		<install.phase>package</install.phase>
+		<cmake.toolchain.file/>
 	</properties>
 
 	<build>
@@ -63,7 +62,7 @@
 				<executions>
 					<execution>
 						<id>install-classifier</id>
-						<phase>${install.phase}</phase>
+						<phase>package</phase>
 						<goals>
 							<goal>install-file</goal>
 						</goals>
@@ -192,7 +191,6 @@
 			</activation>
 			<properties>
 				<cmake.phase>none</cmake.phase>
-				<install.phase>none</install.phase>
 			</properties>
 		</profile>
 	</profiles>
