@@ -20,6 +20,24 @@ jobs:
   prepare-release:
     runs-on: ubuntu-20.04
     steps:
+      - name: Disk cleanup
+        run: |
+          set -x
+          df -h
+          #sudo du -h -d1 /usr/local
+          #sudo du -h -d1 /usr/local/share
+          #sudo du -h -d1 /usr/local/lib
+          #sudo du -h -d1 /usr/share
+          # 4.6G
+          sudo rm -rf /usr/local/.ghcup
+          # 1.7G
+          sudo rm -rf /usr/share/swift
+          # 1.4G
+          sudo rm -rf /usr/share/dotnet
+          # 13G
+          sudo rm -rf /usr/local/lib/android
+          df -h
+
       - name: Install required packages
         run: |
           sudo apt-get update
