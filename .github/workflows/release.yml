@@ -90,6 +90,7 @@ jobs:
 
       - name: Get tag from current branch
         id: tag-selector
+        shell: bash
         run: |
           git fetch -a
           tag=$(git describe --tags `git rev-list --tags --max-count=1`)
