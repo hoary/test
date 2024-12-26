@@ -85,6 +85,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-tags: true
+
+      - name: Get tag from current branch
+        id: tag-selector
+        run: |
+          git fetch -a
+          tag=$(git describe --tags `git rev-list --tags --max-count=1`)
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          git checkout $tag
 
       - name: Set up Python 3.11
         if: false
@@ -221,6 +231,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-tags: true
+
+      - name: Get tag from current branch
+        id: tag-selector
+        run: |
+          git fetch -a
+          tag=$(git describe --tags `git rev-list --tags --max-count=1`)
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          git checkout $tag
 
       - name: Install required packages
         run: |
